@@ -1,183 +1,350 @@
 <!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subtext — Full site coming soon</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subtext — Full site coming soon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <style>
-    :root {
-      --ink: #000000;
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&family=Manrope:wght@800&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<style>
+  :root {
+    --ink: #000000;
     --hairline: #2A2A2A;
     --grey: #8C8C87;
-    --paper: #F5F4F0;
-      }
+    --paper: #D8D6CE;
+    --dot-blue: #201CE0;
+    --dot-blue-deep: #14109E;
+    --dot-size: clamp(15px, 2.9vw, 24px);
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html, body { height: 100%; }
+
   body {
-        background: var(--ink);
-    color: var(--paper);
+    background: var(--paper);
+    color: var(--ink);
     font-family: 'Outfit', sans-serif;
     font-weight: 400;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2.5rem;
+    padding: 4rem 1.5rem;
     position: relative;
-    overflow: hidden;
-}
+    overflow-x: hidden;
+  }
+
+  /* Paper grain overlay — fine pepper-speckle texture */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
 
   a { color: inherit; text-decoration: none; }
 
-  /* Side contact block — static, no animation, present from load */
-  .contact-block {
-        position: fixed;
-    right: 2.75rem;
-    bottom: 2.75rem;
-    text-align: right;
-    font-size: 12px;
-    letter-spacing: 0.03em;
-    color: var(--grey);
-    line-height: 1.8;
-}
+  .poster {
+    position: relative;
+    width: 100%;
+    max-width: 38rem;
+    z-index: 2;
+  }
 
-  .contact-block a { transition: color 0.2s ease; }
-  .contact-block a:hover { color: var(--paper); }
+  /* Logo wordmark — sits right-aligned above the photo block, same width column */
+  .wordmark {
+    text-align: right;
+    width: 58%;
+    margin: 0 auto 0.85rem;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    animation: rise 0.9s ease forwards 0.15s;
+  }
+
+  .wordmark .bullet { color: var(--dot-blue); }
+
+  .wordmark sup {
+    font-size: 0.55em;
+    font-weight: 800;
+    position: relative;
+    top: -0.5em;
+    margin-left: 1px;
+  }
+
+  /* Halftone photo block */
+  .photo-block {
+    position: relative;
+    width: 58%;
+    margin: 0 auto;
+    aspect-ratio: 3 / 2;
+    border-radius: 3px;
+    background-image:
+      radial-gradient(ellipse at 0% 100%, rgba(255, 252, 244, 0.85) 0%, rgba(255, 252, 244, 0.35) 35%, rgba(255, 252, 244, 0) 72%),
+      linear-gradient(to top right, rgba(12, 10, 8, 0) 0%, rgba(10, 9, 7, 0.62) 100%),
+      url('000037.JPG');
+    background-size: cover, cover, cover;
+    background-position: center, center, center 35%;
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    opacity: 0;
+    animation: rise 0.9s ease forwards 0.4s;
+  }
+
+  .grid-dots {
+    position: absolute;
+    inset: 8% 6%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+  }
+
+  .grid-dots .cell,
+  .grid-dots .dot {
+    width: 50%;
+    aspect-ratio: 1;
+    place-self: center;
+  }
+
+  .grid-dots .cell {
+    background: var(--paper);
+    border-radius: 50%;
+  }
+
+  /* Caption row — tagline sits left of the block, copy aligns under it */
+  .caption-row {
+    position: relative;
+    width: 100%;
+    margin-top: 1.75rem;
+    opacity: 0;
+    animation: rise 0.9s ease forwards 0.9s;
+  }
+
+  .caption-date {
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    white-space: nowrap;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+
+  .caption-copy {
+    width: 74%;
+    margin-left: 21%;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--grey);
+  }
+
+  .caption-cta {
+    color: var(--dot-blue);
+    transition: color 0.2s ease;
+  }
+
+  .caption-cta:hover {
+    color: var(--dot-blue-deep);
+  }
 
   @media (max-width: 640px) {
-    .contact-block {
-          position: static;
-      margin-top: 3.5rem;
-      text-align: center;
-}
-}
+    .wordmark, .photo-block { width: 84%; }
+    .caption-date { position: static; width: auto; margin-bottom: 0.6rem; }
+    .caption-copy { width: 84%; margin: 0 auto; }
+    .caption-row { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  }
 
-  /* Center content */
-  .center {
-        text-align: center;
-    max-width: 34rem;
-}
-
-  .eyebrow-group {
-        opacity: 0;
-    animation: rise 1s ease forwards 0.2s;
-}
-
-  .eyebrow {
-        font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 1.75rem;
-}
-
-  .mark {
-        font-size: clamp(2.4rem, 7vw, 4.5rem);
-    font-weight: 300;
-    letter-spacing: 0.04em;
-    line-height: 1;
-}
-
-  .mark sup {
-        font-size: 0.444em;
-    font-weight: 300;
+  /* Blue dots — decorative + interactive intake links */
+  .dot {
+    background: var(--dot-blue);
+    border-radius: 50%;
+    cursor: pointer;
     position: relative;
-    top: 0.056em;
-    vertical-align: top;
-}
-
-  .subtitle {
-        font-family: 'Outfit', sans-serif;
-    font-weight: 300;
-    margin-top: 2rem;
-    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
-    line-height: 1.65;
-    letter-spacing: 0.01em;
-    color: var(--grey);
-    max-width: 32ch;
-    margin-left: auto;
-    margin-right: auto;
+    z-index: 3;
+    transition: transform 0.2s ease, background 0.2s ease;
     opacity: 0;
-    animation: rise 1s ease forwards 1.3s;
-}
+    animation: dotIn 0.5s ease forwards;
+  }
 
-  .cta-group {
-        margin-top: 3rem;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.9rem;
+  .dot:hover,
+  .dot:focus-visible {
+    transform: scale(1.1);
+    background: var(--dot-blue-deep);
+    outline: none;
+  }
+
+  .dot-free {
+    position: absolute;
+    width: var(--dot-size);
+    height: var(--dot-size);
+  }
+
+  /* Hover word — slides out of the dot itself, in blue, no bubble, sentence case */
+  .dot-word {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-left: 0.5rem;
+    white-space: nowrap;
     opacity: 0;
-    animation: rise 1s ease forwards 2.4s;
-}
-
-  .cta-button {
-        display: inline-block;
+    color: var(--dot-blue);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 1.1rem 2.25rem;
-    border: 1px solid var(--hairline);
-    border-radius: 10px;
-    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
-}
+    letter-spacing: 0.01em;
+    text-transform: none;
+    transform: translate(-1.75rem, -50%);
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
+    pointer-events: none;
+  }
 
-  .cta-button:hover {
-        border-color: var(--paper);
-    background: var(--paper);
-    color: var(--ink);
-}
+  /* Grid dots sit inside the photo — no hover word for those */
+  .grid-dots .dot-word {
+    display: none;
+  }
 
-  .cta-microcopy {
-        font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--grey);
-    letter-spacing: 0.02em;
-}
+  .dot:hover .dot-word,
+  .dot:focus-visible .dot-word {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
 
   @keyframes rise {
-        from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
-}
+  }
+
+  @keyframes dotIn {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
 
   @media (prefers-reduced-motion: reduce) {
-        .eyebrow-group, .subtitle, .cta-group {
+    .wordmark, .photo-block, .caption-row, .dot {
       opacity: 1;
       animation: none;
       transform: none;
-}
-}
+    }
+  }
+
+  /* Contact block — static, bottom right */
+  .contact-block {
+    position: fixed;
+    right: 2.75rem;
+    bottom: 2.75rem;
+    text-align: right;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--grey);
+    line-height: 1.8;
+    z-index: 2;
+  }
+
+  .contact-block a { transition: color 0.2s ease; }
+  .contact-block a:hover { color: var(--dot-blue); }
+
+  @media (max-width: 640px) {
+    .contact-block {
+      position: static;
+      margin-top: 3.5rem;
+      text-align: center;
+    }
+  }
 </style>
-  </head>
-  <body>
+</head>
+<body>
 
-    <div class="center">
-      <div class="eyebrow-group">
-        <p class="eyebrow">Full site coming soon</p>
-        <h1 class="mark">SUBTEXT<sup>&reg;</sup></h1>
+  <div class="poster">
+
+    <p class="wordmark"><span class="bullet">&bull;</span>SUBTEXT<sup>&reg;</sup></p>
+
+    <div class="photo-block">
+      <div class="grid-dots">
+        <span class="cell"></span>
+        <a class="dot" href="mailto:hello@subtxtstudio.com" aria-label="Connect"><span class="dot-word" aria-hidden="true">Connect</span></a>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <a class="dot" href="mailto:hello@subtxtstudio.com" aria-label="Say hello"><span class="dot-word" aria-hidden="true">Say hello</span></a>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <a class="dot" href="mailto:hello@subtxtstudio.com" aria-label="Let's create"><span class="dot-word" aria-hidden="true">Let&rsquo;s create</span></a>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <a class="dot" href="mailto:hello@subtxtstudio.com" aria-label="Work with us"><span class="dot-word" aria-hidden="true">Work with us</span></a>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <span class="cell"></span>
+        <a class="dot" href="mailto:hello@subtxtstudio.com" aria-label="Let's discuss your project"><span class="dot-word" aria-hidden="true">Let&rsquo;s discuss your project</span></a>
+        <span class="cell"></span>
       </div>
-
-      <p class="subtitle">Content and production for brands &mdash;<br>from fast social work to full campaigns, built to move the needle.</p>
-
-      <div class="cta-group">
-        <a href="mailto:hello@subtxtstudio.com" class="cta-button">Start here</a>
-        <span class="cta-microcopy">Tell us about your brand and what you need.</span>
     </div>
+
+    <div class="caption-row">
+      <p class="caption-date">a creative partner.</p>
+      <p class="caption-copy">Content and production for brands, from a single social cut to a full campaign, held to the same standard. <a class="caption-cta" href="mailto:hello@subtxtstudio.com">Start here</a></p>
+    </div>
+
+    <!-- Free-floating dots. Each links to the intake form (mailto placeholder until the Typeform is ready). -->
+    <a class="dot dot-free" style="top: -2rem; left: 12%; animation-delay: 1.1s;" href="mailto:hello@subtxtstudio.com" aria-label="Connect">
+      <span class="dot-word" aria-hidden="true">Connect</span>
+    </a>
+
+    <a class="dot dot-free" style="top: -2.5rem; right: 2%; animation-delay: 1.2s;" href="mailto:hello@subtxtstudio.com" aria-label="Say hello">
+      <span class="dot-word" aria-hidden="true">Say hello</span>
+    </a>
+
+    <a class="dot dot-free" style="top: 8rem; left: -1.5%; animation-delay: 1.3s;" href="mailto:hello@subtxtstudio.com" aria-label="Let's create">
+      <span class="dot-word" aria-hidden="true">Let&rsquo;s create</span>
+    </a>
+
+    <a class="dot dot-free" style="bottom: -3rem; right: 16%; animation-delay: 1.4s;" href="mailto:hello@subtxtstudio.com" aria-label="Work with us">
+      <span class="dot-word" aria-hidden="true">Work with us</span>
+    </a>
+
+    <a class="dot dot-free" style="bottom: -6.5rem; left: 45%; animation-delay: 1.5s;" href="mailto:hello@subtxtstudio.com" aria-label="Let's discuss your project">
+      <span class="dot-word" aria-hidden="true">Let&rsquo;s discuss your project</span>
+    </a>
+
   </div>
 
   <div class="contact-block">
     <div>E. <a href="mailto:hello@subtxtstudio.com">hello@subtxtstudio.com</a></div>
     <div>M. <a href="tel:+61433506203">0433 506 203</a></div>
-    </div>
+  </div>
 
-  </body>
-  </html>
-  
+</body>
+</html>
