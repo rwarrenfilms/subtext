@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subtext — General Enquiry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@800&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<style>
+  :root {
+    --ink: #000000;
+    --grey: #8C8C87;
+    --paper: #D8D6CE;
+    --line: #B9B7AE;
+    --dot-blue: #201CE0;
+    --dot-blue-deep: #14109E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .site-nav-top {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .site-nav-top a { color: var(--ink); transition: color 0.2s ease; }
+  .site-nav-top a:hover { color: var(--dot-blue); }
+  .site-nav-top span:last-child { color: var(--grey); }
+
+  @media (max-width: 640px) {
+    .site-nav-top { top: 1.25rem; left: 1.25rem; right: 1.25rem; font-size: 10px; }
+  }
+
+  main {
+    position: relative;
+    z-index: 2;
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 8rem 1.5rem 6rem;
+  }
+
+  .intro-heading {
+    font-family: 'Manrope', 'Helvetica Neue', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro-text {
+    color: var(--grey);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 30rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .alt-link {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--dot-blue);
+    border-bottom: 1px solid rgba(32, 28, 224, 0.35);
+    margin-bottom: 3rem;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .alt-link:hover {
+    color: var(--dot-blue-deep);
+    border-color: var(--dot-blue-deep);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .field label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.6rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 0.1rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 7rem;
+    line-height: 1.5;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--dot-blue);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #A9A79E;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+  }
+
+  @media (max-width: 560px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  button[type="submit"] {
+    align-self: flex-start;
+    margin-top: 1rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button[type="submit"]:hover { background: var(--dot-blue); }
+  button[type="submit"]:disabled { opacity: 0.5; cursor: default; }
+
+  .status-message {
+    font-size: 14px;
+    margin-top: -0.75rem;
+  }
+
+  .status-message.success { color: var(--dot-blue-deep); }
+  .status-message.error { color: #A3271B; }
+
+  form.is-hidden { display: none; }
+</style>
+</head>
+<body>
+
+  <div class="site-nav-top">
+    <a href="index.html">Subtext</a>
+    <span>General Enquiry</span>
+  </div>
+
+  <main>
+    <h1 class="intro-heading">Get in touch.</h1>
+    <p class="intro-text">
+      Got a question, or just want to say hello? Send us a quick note and we'll get back to you shortly.
+    </p>
+    <a class="alt-link" href="onboarding.html">Already have a project in mind? Fill out the project intake form instead &rarr;</a>
+
+    <form id="enquiry-form" action="https://formspree.io/f/mqpzonry" method="POST">
+      <input type="hidden" name="form_type" value="General enquiry">
+
+      <div class="field-row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+
+      <p id="form-status" class="status-message" role="status" aria-live="polite"></p>
+
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+
+  <script>
+  (function () {
+    var form = document.getElementById('enquiry-form');
+    var status = document.getElementById('form-status');
+    var submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      status.textContent = 'Sending...';
+      status.className = 'status-message';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(function (response) {
+        if (response.ok) {
+          form.classList.add('is-hidden');
+          status.textContent = "Thanks — we've got it and will be in touch shortly.";
+          status.className = 'status-message success';
+          document.querySelector('main').appendChild(status);
+        } else {
+          return response.json().then(function (data) {
+            var msg = (data && data.errors && data.errors.map(function (er) { return er.message; }).join(', ')) || 'Something went wrong — please try again.';
+            status.textContent = msg;
+            status.className = 'status-message error';
+            submitBtn.disabled = false;
+          });
+        }
+      }).catch(function () {
+        status.textContent = 'Something went wrong — please check your connection and try again.';
+        status.className = 'status-message error';
+        submitBtn.disabled = false;
+      });
+    });
+  })();
+  </script>
+
+</body>
+</html>

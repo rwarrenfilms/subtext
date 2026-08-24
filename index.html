@@ -6,14 +6,19 @@
 <title>Subtext — Full site coming soon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&family=Manrope:wght@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&family=Manrope:wght@300;800&display=swap" rel="stylesheet">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<noscript><style>
+  body.intro-active .wordmark, body.intro-active .photo-block, body.intro-active .caption-row, body.intro-active .contact-block, body.intro-active .eyebrow-block { opacity: 1 !important; animation: none !important; }
+  body.intro-active .dot { opacity: 1 !important; }
+  .intro-text { display: none !important; }
+</style></noscript>
 <style>
   :root {
     --ink: #000000;
     --hairline: #2A2A2A;
     --grey: #8C8C87;
-    --paper: #D8D6CE;
+    --paper: #F1EFE9;
     --dot-blue: #201CE0;
     --dot-blue-deep: #14109E;
     --dot-size: clamp(15px, 2.9vw, 24px);
@@ -30,6 +35,7 @@
     font-weight: 400;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 4rem 1.5rem;
@@ -50,6 +56,75 @@
   }
 
   a { color: inherit; text-decoration: none; }
+
+  /* Intro — text fades in, melts into one dot, then that dot divides into the ten */
+  body.intro-active .wordmark,
+  body.intro-active .caption-row,
+  body.intro-active .contact-block,
+  body.intro-active .eyebrow-block {
+    opacity: 0 !important;
+    animation: none !important;
+  }
+
+  /* photo-block uses visibility, not opacity — opacity on a parent would
+     also hide the grid dots nested inside it, which need to stay visible.
+     Its own base opacity:0 (for the later rise-in) must be neutralized too,
+     or it hides those same nested dots on its own. */
+  body.intro-active .photo-block {
+    visibility: hidden !important;
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  body.intro-active .grid-dots .dot {
+    visibility: visible !important;
+  }
+
+  body.intro-active .dot {
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 10px 28px rgba(20, 16, 158, 0.4), 0 3px 10px rgba(20, 16, 158, 0.3);
+  }
+
+  /* Automatic "Click me" hint on the top-left dot, a few seconds after settling */
+  .dot.hint-active .dot-word {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+
+  .intro-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    font-size: clamp(12px, 2vw, 18px);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--dot-blue);
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Single blue dot the text melts into, before it divides into the ten */
+  .intro-dot {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    border-radius: 50%;
+    background: var(--dot-blue);
+    z-index: 6;
+    opacity: 0;
+    transform: scale(0.3);
+    pointer-events: none;
+  }
 
   .poster {
     position: relative;
@@ -91,9 +166,9 @@
     background-image:
       radial-gradient(ellipse at 0% 100%, rgba(255, 252, 244, 0.85) 0%, rgba(255, 252, 244, 0.35) 35%, rgba(255, 252, 244, 0) 72%),
       linear-gradient(to top right, rgba(12, 10, 8, 0) 0%, rgba(10, 9, 7, 0.62) 100%),
-      url('000037.JPG');
+      url('bts-new.jpg');
     background-size: cover, cover, cover;
-    background-position: center, center, center 35%;
+    background-position: center, center, center 30%;
     background-repeat: no-repeat, no-repeat, no-repeat;
     opacity: 0;
     animation: rise 0.9s ease forwards 0.4s;
@@ -131,11 +206,12 @@
   .caption-date {
     position: absolute;
     left: 0;
-    top: 0.1rem;
+    top: 0;
     white-space: nowrap;
     font-family: 'Manrope', sans-serif;
     font-weight: 800;
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.7;
     letter-spacing: 0.01em;
     color: var(--ink);
   }
@@ -163,6 +239,12 @@
     .caption-date { position: static; width: auto; margin-bottom: 0.6rem; }
     .caption-copy { width: 84%; margin: 0 auto; }
     .caption-row { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+    /* These two dots hang furthest below the poster — on the shorter,
+       tighter mobile layout that reach starts overlapping the contact
+       block below, so pull them in. */
+    .dot-below-1 { bottom: -1.5rem !important; right: 8% !important; }
+    .dot-below-2 { bottom: -2.25rem !important; left: 38% !important; }
   }
 
   /* Blue dots — decorative + interactive intake links */
@@ -173,8 +255,7 @@
     position: relative;
     z-index: 3;
     transition: transform 0.2s ease, background 0.2s ease;
-    opacity: 0;
-    animation: dotIn 0.5s ease forwards;
+    opacity: 1;
   }
 
   .dot:hover,
@@ -204,7 +285,7 @@
     letter-spacing: 0.01em;
     text-transform: none;
     transform: translate(-1.75rem, -50%);
-    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
     pointer-events: none;
   }
 
@@ -224,17 +305,23 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes dotIn {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .wordmark, .photo-block, .caption-row, .dot {
+    .wordmark, .photo-block, .caption-row, .dot, .eyebrow-block {
       opacity: 1;
       animation: none;
       transform: none;
     }
+    body.intro-active .wordmark,
+    body.intro-active .photo-block,
+    body.intro-active .caption-row,
+    body.intro-active .contact-block,
+    body.intro-active .eyebrow-block,
+    body.intro-active .dot {
+      opacity: 1 !important;
+      animation: none !important;
+      pointer-events: auto !important;
+    }
+    .intro-text, .intro-dot { display: none !important; }
   }
 
   /* Contact block — static, bottom right */
@@ -249,21 +336,152 @@
     color: var(--grey);
     line-height: 1.8;
     z-index: 2;
+    opacity: 0;
+    animation: rise 0.9s ease forwards 1.1s;
   }
 
   .contact-block a { transition: color 0.2s ease; }
   .contact-block a:hover { color: var(--dot-blue); }
 
+  /* Eyebrow — static, top left */
+  .eyebrow-block {
+    position: fixed;
+    left: 2.75rem;
+    top: 2.75rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--grey);
+    z-index: 2;
+    opacity: 0;
+    animation: rise 0.9s ease forwards 1.1s;
+  }
+
   @media (max-width: 640px) {
+    body {
+      justify-content: flex-start;
+      padding-top: 5.5rem;
+      padding-bottom: 3rem;
+    }
     .contact-block {
       position: static;
       margin-top: 3.5rem;
       text-align: center;
     }
+    .eyebrow-block {
+      left: 1.25rem;
+      top: 1.25rem;
+    }
+  }
+
+  /* Choice modal — shown when a dot or "Start here" is clicked */
+  .choice-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 20;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+  }
+
+  .choice-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .choice-modal {
+    position: relative;
+    width: 100%;
+    max-width: 26rem;
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 2.5rem 2rem 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    transform: translateY(8px);
+    transition: transform 0.25s ease;
+  }
+
+  .choice-overlay.is-open .choice-modal {
+    transform: translateY(0);
+  }
+
+  .choice-modal h2 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+  }
+
+  .choice-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--grey);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .choice-close:hover { color: var(--ink); }
+
+  .choice-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 1px solid var(--hairline);
+    background: transparent;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .choice-option:last-child { margin-bottom: 0; }
+
+  .choice-option:hover,
+  .choice-option:focus-visible {
+    border-color: var(--dot-blue);
+    background: rgba(32, 28, 224, 0.06);
+    outline: none;
+  }
+
+  .choice-title {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+
+  .choice-desc {
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--grey);
   }
 </style>
 </head>
 <body>
+<script>document.body.className = 'intro-active';</script>
+
+  <p class="intro-text" aria-hidden="true">Full website coming soon</p>
+  <div class="intro-dot" aria-hidden="true"></div>
 
   <div class="poster">
 
@@ -319,23 +537,23 @@
     </div>
 
     <!-- Free-floating dots. Each links to the intake form (mailto placeholder until the Typeform is ready). -->
-    <a class="dot dot-free" style="top: -2rem; left: 12%; animation-delay: 1.1s;" href="mailto:hello@subtxtstudio.com" aria-label="Connect">
+    <a class="dot dot-free" id="hint-dot" style="top: -2rem; left: 12%" href="mailto:hello@subtxtstudio.com" aria-label="Connect">
       <span class="dot-word" aria-hidden="true">Connect</span>
     </a>
 
-    <a class="dot dot-free" style="top: -2.5rem; right: 2%; animation-delay: 1.2s;" href="mailto:hello@subtxtstudio.com" aria-label="Say hello">
+    <a class="dot dot-free" style="top: -2.5rem; right: 2%" href="mailto:hello@subtxtstudio.com" aria-label="Say hello">
       <span class="dot-word" aria-hidden="true">Say hello</span>
     </a>
 
-    <a class="dot dot-free" style="top: 8rem; left: -1.5%; animation-delay: 1.3s;" href="mailto:hello@subtxtstudio.com" aria-label="Let's create">
+    <a class="dot dot-free" style="top: 8rem; left: -1.5%" href="mailto:hello@subtxtstudio.com" aria-label="Let's create">
       <span class="dot-word" aria-hidden="true">Let&rsquo;s create</span>
     </a>
 
-    <a class="dot dot-free" style="bottom: -3rem; right: 16%; animation-delay: 1.4s;" href="mailto:hello@subtxtstudio.com" aria-label="Work with us">
+    <a class="dot dot-free dot-below-1" style="bottom: -3rem; right: 16%" href="mailto:hello@subtxtstudio.com" aria-label="Work with us">
       <span class="dot-word" aria-hidden="true">Work with us</span>
     </a>
 
-    <a class="dot dot-free" style="bottom: -6.5rem; left: 45%; animation-delay: 1.5s;" href="mailto:hello@subtxtstudio.com" aria-label="Let's discuss your project">
+    <a class="dot dot-free dot-below-2" style="bottom: -6.5rem; left: 45%" href="mailto:hello@subtxtstudio.com" aria-label="Let's discuss your project">
       <span class="dot-word" aria-hidden="true">Let&rsquo;s discuss your project</span>
     </a>
 
@@ -345,6 +563,245 @@
     <div>E. <a href="mailto:hello@subtxtstudio.com">hello@subtxtstudio.com</a></div>
     <div>M. <a href="tel:+61433506203">0433 506 203</a></div>
   </div>
+
+  <p class="eyebrow-block">Full website coming soon.</p>
+
+  <div class="choice-overlay" id="choice-overlay" aria-hidden="true">
+    <div class="choice-modal" role="dialog" aria-modal="true" aria-labelledby="choice-heading">
+      <button class="choice-close" id="choice-close" type="button" aria-label="Close">&times;</button>
+      <h2 id="choice-heading">How can we help?</h2>
+      <a class="choice-option" href="general-enquiry.html">
+        <span class="choice-title">General enquiry</span>
+        <span class="choice-desc">Have a question, or just want to say hello? Send us a quick note.</span>
+      </a>
+      <a class="choice-option" href="onboarding.html">
+        <span class="choice-title">Already have a project in mind?</span>
+        <span class="choice-desc">Tell us the details and we'll put together the right approach.</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var overlay = document.getElementById('choice-overlay');
+    var closeBtn = document.getElementById('choice-close');
+
+    function openChoice() {
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeChoice() {
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('.dot, .caption-cta');
+      if (trigger) {
+        e.preventDefault();
+        openChoice();
+        return;
+      }
+      if (e.target === overlay) closeChoice();
+    });
+
+    closeBtn.addEventListener('click', closeChoice);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeChoice();
+    });
+  })();
+  </script>
+
+  <script>
+  (function () {
+    var body = document.body;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+    var introText = document.querySelector('.intro-text');
+    var introDot = document.querySelector('.intro-dot');
+    var done = false;
+    var fallback;
+    var gridDotHomes = null; // where the grid dots came from, so they can go back
+
+    // The grid dots normally live inside .photo-block, which stays hidden
+    // for the whole intro. Rather than lean on a visibility override to
+    // peek them out of a hidden ancestor, pull them out into the body
+    // entirely for the duration of the intro — simpler and more reliable.
+    function freeGridDotsFromPhoto() {
+      gridDotHomes = [];
+      dots.forEach(function (d) {
+        if (!d.closest('.grid-dots')) return;
+        var r = d.getBoundingClientRect();
+        gridDotHomes.push({ el: d, parent: d.parentNode, next: d.nextSibling });
+        d.style.position = 'fixed';
+        d.style.left = r.left + 'px';
+        d.style.top = r.top + 'px';
+        d.style.width = r.width + 'px';
+        d.style.height = r.height + 'px';
+        d.style.margin = '0';
+        body.appendChild(d);
+      });
+    }
+
+    function returnGridDotsToPhoto() {
+      if (!gridDotHomes) return;
+      gridDotHomes.forEach(function (home) {
+        home.el.style.position = '';
+        home.el.style.left = '';
+        home.el.style.top = '';
+        home.el.style.width = '';
+        home.el.style.height = '';
+        home.el.style.margin = '';
+        home.parent.insertBefore(home.el, home.next);
+      });
+      gridDotHomes = null;
+    }
+
+    function scheduleHint() {
+      var hintDot = document.getElementById('hint-dot');
+      if (!hintDot) return;
+      var word = hintDot.querySelector('.dot-word');
+      if (!word) return;
+      var original = word.textContent;
+
+      setTimeout(function () {
+        word.textContent = 'Click me';
+        hintDot.classList.add('hint-active');
+
+        setTimeout(function () {
+          hintDot.classList.remove('hint-active');
+          setTimeout(function () {
+            word.textContent = original;
+          }, 900);
+        }, 3000);
+      }, 3000);
+    }
+
+    function revealAll() {
+      if (done) return;
+      done = true;
+      clearTimeout(fallback);
+      body.classList.remove('intro-active');
+      returnGridDotsToPhoto();
+      dots.forEach(function (d) {
+        d.style.transition = '';
+        d.style.transform = '';
+        d.style.opacity = '';
+        d.style.pointerEvents = '';
+      });
+      if (introText) {
+        introText.style.transition = '';
+        introText.style.opacity = '0';
+      }
+      if (introDot) {
+        introDot.style.display = 'none';
+      }
+      scheduleHint();
+    }
+
+    if (reduceMotion || !dots.length || typeof requestAnimationFrame !== 'function') {
+      revealAll();
+      return;
+    }
+
+    fallback = setTimeout(revealAll, 8000);
+
+    var EASE_SMOOTH = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+    function startSequence() {
+      requestAnimationFrame(function () {
+        freeGridDotsFromPhoto();
+
+        var natural = dots.map(function (d) {
+          var r = d.getBoundingClientRect();
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        });
+
+        // Phase timeline (ms):
+        //  1. "Full website coming soon" fades in and holds — 3s total.
+        //  2. It melts away into a single blue dot at screen center.
+        //  3. That dot divides into the ten, each flying straight to its
+        //     real resting spot on the poster — no circling, no detour.
+        var T_TEXT = 3000;      // text fades in + holds
+        var T_MELT = 650;       // text melts into the single dot
+        var T_DIVIDE = 1600;    // the one dot becomes ten, in place
+
+        // 1. Text fades in and holds.
+        if (introText) {
+          introText.style.transition = 'opacity 0.6s ease';
+          requestAnimationFrame(function () {
+            introText.style.opacity = '1';
+          });
+        }
+
+        setTimeout(function () {
+          // 2. Text squeezes down into the single dot — no fade, it shrinks
+          // straight to a point at the dot's location.
+          if (introText) {
+            introText.style.transformOrigin = 'center';
+            introText.style.transition = 'transform ' + (T_MELT / 1000) + 's cubic-bezier(0.6, 0, 0.9, 0.4)';
+            introText.style.transform = 'translate(-50%, -50%) scale(0.02)';
+          }
+          if (introDot) {
+            introDot.style.transition = 'opacity ' + (T_MELT / 1000) + 's ease, transform ' + (T_MELT / 1000) + 's ' + EASE_SMOOTH;
+            introDot.style.opacity = '1';
+            introDot.style.transform = 'scale(1)';
+          }
+
+          setTimeout(function () {
+            // Text has fully squeezed down to a point — snap it away instantly
+            // (no fade) now that it's visually merged into the dot.
+            if (introText) {
+              introText.style.transition = 'none';
+              introText.style.opacity = '0';
+            }
+
+            // 3. The one dot divides into the ten, flying straight to place.
+            if (introDot) {
+              introDot.style.transition = 'opacity 0.3s ease';
+              introDot.style.opacity = '0';
+            }
+
+            var cx = window.innerWidth / 2;
+            var cy = window.innerHeight / 2;
+
+            dots.forEach(function (d, i) {
+              var dx = cx - natural[i].x;
+              var dy = cy - natural[i].y;
+              d.style.transition = 'none';
+              d.style.opacity = '1';
+              d.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(0.3)';
+            });
+
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                dots.forEach(function (d) {
+                  d.style.transition = 'transform ' + (T_DIVIDE / 1000) + 's ' + EASE_SMOOTH;
+                  d.style.transform = 'translate(0,0) scale(1)';
+                });
+              });
+            });
+
+            body.classList.remove('intro-active');
+            setTimeout(revealAll, T_DIVIDE + 50);
+          }, T_MELT);
+        }, T_TEXT);
+      });
+    }
+
+    try {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(startSequence, startSequence);
+      } else {
+        startSequence();
+      }
+    } catch (e) {
+      revealAll();
+    }
+  })();
+  </script>
 
 </body>
 </html>

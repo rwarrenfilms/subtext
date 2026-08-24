@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subtext — Project Intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@800&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<style>
+  :root {
+    --ink: #000000;
+    --grey: #8C8C87;
+    --paper: #D8D6CE;
+    --line: #B9B7AE;
+    --dot-blue: #201CE0;
+    --dot-blue-deep: #14109E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .site-nav-top {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .site-nav-top a { color: var(--ink); transition: color 0.2s ease; }
+  .site-nav-top a:hover { color: var(--dot-blue); }
+  .site-nav-top span:last-child { color: var(--grey); }
+
+  @media (max-width: 640px) {
+    .site-nav-top { top: 1.25rem; left: 1.25rem; right: 1.25rem; font-size: 10px; }
+  }
+
+  main {
+    position: relative;
+    z-index: 2;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 8rem 1.5rem 6rem;
+  }
+
+  .intro-heading {
+    font-family: 'Manrope', 'Helvetica Neue', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro-text {
+    color: var(--grey);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 34rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .alt-link {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--dot-blue);
+    border-bottom: 1px solid rgba(32, 28, 224, 0.35);
+    margin-bottom: 3.5rem;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .alt-link:hover {
+    color: var(--dot-blue-deep);
+    border-color: var(--dot-blue-deep);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .field label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.6rem;
+  }
+
+  .field .hint {
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--grey);
+    margin-top: 0.4rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 0.1rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238C8C87' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.2rem center;
+    padding-right: 1.5rem;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 5rem;
+    line-height: 1.5;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--dot-blue);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #A9A79E;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    padding: 0.5rem 0.9rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .checkbox-option:has(input:checked) {
+    border-color: var(--dot-blue);
+    background: rgba(32, 28, 224, 0.06);
+  }
+
+  .checkbox-option input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--dot-blue);
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  .file-field {
+    border: 1px dashed var(--line);
+    padding: 1rem;
+    font-size: 13px;
+    color: var(--grey);
+  }
+
+  .file-field input[type="file"] {
+    display: block;
+    margin-top: 0.6rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  button[type="submit"] {
+    align-self: flex-start;
+    margin-top: 1rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button[type="submit"]:hover { background: var(--dot-blue); }
+  button[type="submit"]:disabled { opacity: 0.5; cursor: default; }
+
+  .status-message {
+    font-size: 14px;
+    margin-top: -0.75rem;
+  }
+
+  .status-message.success { color: var(--dot-blue-deep); }
+  .status-message.error { color: #A3271B; }
+
+  form.is-hidden { display: none; }
+
+  main.success-mode {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  .success-panel {
+    display: none;
+    text-align: center;
+  }
+
+  .success-panel.is-visible { display: block; }
+
+  .success-mark {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--dot-blue);
+    margin: 0 auto 2.25rem;
+  }
+
+  .success-heading {
+    font-family: 'Manrope', 'Helvetica Neue', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.9rem;
+  }
+
+  .success-text {
+    color: var(--grey);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 26rem;
+    margin: 0 auto 4rem;
+  }
+
+  .steps {
+    list-style: none;
+    max-width: 27rem;
+    margin: 0 auto;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.25rem 0;
+  }
+
+  .step + .step {
+    border-top: 1px solid var(--line);
+  }
+
+  .step-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--dot-blue);
+    margin-bottom: 0.7rem;
+  }
+
+  .step-title {
+    font-family: 'Manrope', 'Helvetica Neue', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--grey);
+    max-width: 24rem;
+  }
+</style>
+</head>
+<body>
+
+  <div class="site-nav-top">
+    <a href="index.html">Subtext</a>
+    <span>New Project Intake</span>
+  </div>
+
+  <main>
+    <h1 class="intro-heading">Tell us about the project.</h1>
+    <p class="intro-text">
+      Fill this out and we'll follow up within a couple of days. The more context you give us
+      up front, the faster we can put together the right approach.
+    </p>
+    <a class="alt-link" href="general-enquiry.html">Just have a question? Send a general enquiry instead &rarr;</a>
+
+    <form id="intake-form" action="https://formspree.io/f/mqpzonry" method="POST" enctype="multipart/form-data">
+
+      <div class="field-row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone">
+        </div>
+        <div class="field">
+          <label for="instagram">IG Profile</label>
+          <input type="text" id="instagram" name="instagram" placeholder="@handle">
+        </div>
+      </div>
+
+      <div class="field">
+        <label id="project_type_label">Project type</label>
+        <span class="hint" style="margin-top:0; margin-bottom:0.8rem;">Select all that apply.</span>
+        <div class="checkbox-group" role="group" aria-labelledby="project_type_label">
+          <label class="checkbox-option">
+            <input type="checkbox" name="project_type" value="Video">
+            <span>Video</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" name="project_type" value="Photo">
+            <span>Photo</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" name="project_type" value="Editing">
+            <span>Editing</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" name="project_type" value="Strategy">
+            <span>Strategy</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" name="project_type" value="Other">
+            <span>Other</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="purpose">What is the purpose of this content? Main goals</label>
+        <textarea id="purpose" name="purpose" placeholder="e.g. To promote, educate, build trust with testimonials, build brand awareness…" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="description">Project description</label>
+        <span class="hint" style="margin-top:0; margin-bottom:0.6rem;">
+          Summarise the current concept and provide any key background information and context to the brief.
+        </span>
+        <textarea id="description" name="description" rows="5" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="deliverables">Deliverables</label>
+        <span class="hint" style="margin-top:0; margin-bottom:0.6rem;">
+          What type of deliverables do you require? How many and what length?
+        </span>
+        <textarea id="deliverables" name="deliverables" placeholder="e.g. 1x 2-3 min brand film, 2x 30s reels, 1x 10s teaser, 50 edited images etc."></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="budget">Budget range</label>
+          <select id="budget" name="budget">
+            <option value="" disabled selected>Select a range</option>
+            <option value="$3,000 - $5,000">$3,000 - $5,000</option>
+            <option value="$5,000 - $10,000">$5,000 - $10,000</option>
+            <option value="$10,000 - $25,000">$10,000 - $25,000</option>
+            <option value="$25,000 - $50,000+">$25,000 - $50,000+</option>
+            <option value="Not sure yet">Not sure yet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="timeline">Ideal dates and timeline</label>
+          <input type="text" id="timeline" name="timeline" placeholder="e.g. Shoot day 21st August, deliverable due date 2nd September">
+        </div>
+      </div>
+
+      <div class="field file-field">
+        <label for="brief" style="margin-bottom:0;">Attach current brief (optional)</label>
+        <input type="file" id="brief" name="brief">
+      </div>
+
+      <p id="form-status" class="status-message" role="status" aria-live="polite"></p>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="success-panel" id="success-panel">
+      <div class="success-mark" aria-hidden="true"></div>
+      <h2 class="success-heading">Thanks, we've got your brief.</h2>
+      <p class="success-text">A confirmation has been sent to your email. Here's what happens from here:</p>
+      <ol class="steps">
+        <li class="step">
+          <span class="step-number">01</span>
+          <div>
+            <h3 class="step-title">Review</h3>
+            <p class="step-desc">We read every brief in detail against what you've told us: your goals, context, and any existing material you've attached. Expect to hear from us within 48 hours.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-number">02</span>
+          <div>
+            <h3 class="step-title">Call</h3>
+            <p class="step-desc">If it looks like a fit, we'll set up a short call to align on scope, direction, and timing before anything's put on paper.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-number">03</span>
+          <div>
+            <h3 class="step-title">Proposal</h3>
+            <p class="step-desc">You'll receive a tailored scope, timeline, and cost in a quote. Nothing moves forward until you've seen and approved it.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </main>
+
+  <script>
+  (function () {
+    var form = document.getElementById('intake-form');
+    var status = document.getElementById('form-status');
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var successPanel = document.getElementById('success-panel');
+    var mainEl = document.querySelector('main');
+    var introHeading = document.querySelector('.intro-heading');
+    var introText = document.querySelector('.intro-text');
+    var altLink = document.querySelector('.alt-link');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var typeChecked = form.querySelectorAll('input[name="project_type"]:checked');
+      if (typeChecked.length === 0) {
+        status.textContent = 'Please select at least one project type.';
+        status.className = 'status-message error';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      status.textContent = 'Sending...';
+      status.className = 'status-message';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(function (response) {
+        if (response.ok) {
+          form.classList.add('is-hidden');
+          if (introHeading) introHeading.style.display = 'none';
+          if (introText) introText.style.display = 'none';
+          if (altLink) altLink.style.display = 'none';
+          if (mainEl) mainEl.classList.add('success-mode');
+          successPanel.classList.add('is-visible');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          return response.json().then(function (data) {
+            var msg = (data && data.errors && data.errors.map(function (er) { return er.message; }).join(', ')) || 'Something went wrong — please try again.';
+            status.textContent = msg;
+            status.className = 'status-message error';
+            submitBtn.disabled = false;
+          });
+        }
+      }).catch(function () {
+        status.textContent = 'Something went wrong — please check your connection and try again.';
+        status.className = 'status-message error';
+        submitBtn.disabled = false;
+      });
+    });
+  })();
+  </script>
+
+</body>
+</html>
